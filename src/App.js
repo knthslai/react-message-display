@@ -15,11 +15,8 @@ class App extends Component {
   }
   async getMessages() {
     try {
-      const messages = await axios.get(`https://gv-text-api.herokuapp.com/api/texts/to`, {
-        headers: {
-          "Access-Control-Allow-Origin": `*`
-        }
-      })
+      const messages = await axios.get(`https://gv-text-api.herokuapp.com/api/texts/to`)
+
       console.log(`messages: `, messages.data)
     } catch (error) { console.error(error); }
   }
