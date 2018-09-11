@@ -56,7 +56,6 @@ class App extends Component {
         consolidatedMessages.push([msg])
       }
     })
-    console.log(`consolidated Messages: `, consolidatedMessages)
 
     const loadMoreBtn = document.getElementById(`load-more`)
     if (loadMoreBtn) {
