@@ -45,6 +45,7 @@ div#bubble {
     padding-right: 10px;
     padding-bottom: 5px;
     margin: 5px;
+    box-shadow: 5px 5px #ededed;
 }
 div#from-container > div#bubble{
   background: rgb(158, 231, 255);
