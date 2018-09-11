@@ -5,7 +5,8 @@ class ToMessage extends Component {
     return (
       <div id="to-container">
         <div id="bubble">
-          {this.props.message.text}
+          <a id="timeStamp">{this.props.messages[this.props.messages.length - 1].timeText}</a>
+          {this.props.messages.map(msg => <a key={msg.text}>{msg.text}</a>)}
         </div>
       </div>
     );

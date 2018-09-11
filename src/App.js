@@ -8,7 +8,7 @@ class App extends Component {
     super();
     this.state = {
       pages: 1,
-      messageList: []
+      messageList: [],
     };
   }
   componentDidMount() {
@@ -25,11 +25,15 @@ class App extends Component {
 
       try {
         fetch(URL).then(resp => resp.json()).then(messages => {
-          const messageList = messages.texts.map(({ text, time }) => ({
-            author: source,
-            text,
-            time
-          }))
+          const messageList = messages.texts.map(({ text, time }) => {
+            const formattedDate = new Date(time)
+            return {
+              author: source,
+              text,
+              time,
+              timeText: formattedDate.toLocaleTimeString()
+            }
+          })
           newState.messageList = this.state.messageList.concat(messageList)
           this.setState(newState)
         })
@@ -38,10 +42,23 @@ class App extends Component {
   }
   render() {
     const messages = this.state.messageList
-    messages.sort((a, b) => b.time - a.time)
+    messages.sort((a, b) => a.time - b.time)
+    const consolidatedMessages = []
+    messages.forEach(msg => {
+      const currMsgIdx = consolidatedMessages.length
+      if (currMsgIdx) {
+        if (consolidatedMessages[currMsgIdx - 1][0].author === msg.author) {
+          consolidatedMessages[currMsgIdx - 1].push(msg)
+        } else {
+          consolidatedMessages.push([msg])
+        }
+      } else {
+        consolidatedMessages.push([msg])
+      }
+    })
+
     const loadMoreBtn = document.getElementById(`load-more`)
     if (loadMoreBtn) {
-      console.dir(loadMoreBtn.style.opacity)
       loadMoreBtn.style.opacity = 1
       if (loadMoreBtn.classList.length && this.state.messageList.length) {
         loadMoreBtn.classList.remove(`disabled`)
@@ -58,13 +75,14 @@ class App extends Component {
           }}>Load previous</button>
         </div>
         <div id="messages">
+          <h2 style={{ textAlign: `center`, color: `gray` }}>Friday, September 7th</h2>
           {
             this.state.messageList.length ?
-              messages.map(msg => {
+              consolidatedMessages.map(msg => {
                 return (
-                  msg.author === `to` ?
-                    <ToMessage key={msg.text} message={msg} />
-                    : <FromMessage key={msg.text} message={msg} />
+                  msg[0].author === `to` ?
+                    <ToMessage key={msg[0].text} messages={msg} />
+                    : <FromMessage key={msg[0].text} messages={msg} />
                 )
               })
               : <h2 style={{ textAlign: `center` }}>Loading ...</h2>
