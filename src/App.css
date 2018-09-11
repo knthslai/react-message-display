@@ -1,28 +1,61 @@
-.App {
-  text-align: center;
+*{
+  border-radius: 25px;
 }
-
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 80px;
+div#chat-display {
+  margin: 15px;
+  border: 1px solid lightgray;
 }
-
-.App-header {
-  background-color: #222;
-  height: 150px;
-  padding: 20px;
-  color: white;
+div#buttons {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  background: lightgray;
+  border-bottom-left-radius: 0px;
+  border-bottom-right-radius: 0px;
+  padding: 10px;
 }
-
-.App-title {
-  font-size: 1.5em;
+.disabled{
+  opacity: 0.2;
 }
-
-.App-intro {
-  font-size: large;
+h1 {
+  margin: 0;
 }
-
-@keyframes App-logo-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+div#contact-icon {
+  color:white;
+  background: gray;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+div#messages {
+  display: flex;
+  flex-direction: column;
+  border-top-left-radius: 0px;
+  border-top-right-radius: 0px;
+  padding: 10px;
+}
+div#bubble {
+    padding: 5px;
+    margin: 5px;
+}
+div#from-container > div#bubble{
+  background: rgb(51, 204, 255);
+}
+div#to-container > div#bubble{
+  background: rgb(228, 228, 228);
+}
+div#to-container{
+  width: 100%;
+  display: inherit;
+  justify-content: flex-end;
+}
+div#from-container{
+  width: 100%;
+  display: inherit;
+  justify-content: flex-start;
+}
+button#load-more{
+  opacity: 0;
+}
+button#load-more:focus{
+  outline:0;
 }

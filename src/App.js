@@ -1,56 +1,76 @@
 import React, { Component } from 'react';
-// import { Launcher } from 'react-chat-window'
 import './App.css';
-import axios from 'axios'
+import ToMessage from './Components/msgBubbleTo';
+import FromMessage from './Components/msgBubbleFrom';
 
 class App extends Component {
   constructor() {
     super();
     this.state = {
-      messageList: {}
+      pages: 1,
+      messageList: []
     };
   }
   componentDidMount() {
     this.getMessages()
   }
-  async getMessages() {
-    try {
-      const messages = await axios.get(`https://gv-text-api.herokuapp.com/api/texts/to`)
+  getMessages(pagesNum) {
+    [`to`, `from`].forEach(source => {
+      let URL = `https://cors-anywhere.herokuapp.com/https://gv-text-api.herokuapp.com/api/texts/${source}`
+      const newState = {}
+      if (pagesNum) {
+        URL += `?pages=${pagesNum}`
+        newState.pages = pagesNum + 1
+      }
 
-      console.log(`messages: `, messages.data)
-    } catch (error) { console.error(error); }
+      try {
+        fetch(URL).then(resp => resp.json()).then(messages => {
+          const messageList = messages.texts.map(({ text, time }) => ({
+            author: source,
+            text,
+            time
+          }))
+          newState.messageList = this.state.messageList.concat(messageList)
+          this.setState(newState)
+        })
+      } catch (error) { console.error(error); }
+    })
   }
-  // _onMessageWasSent(message) {
-  //   this.setState({
-  //     messageList: [...this.state.messageList, message]
-  //   })
-  // }
-
-  // _sendMessage(text) {
-  //   if (text.length > 0) {
-  //     this.setState({
-  //       messageList: [...this.state.messageList, {
-  //         author: `them`,
-  //         type: `text`,
-  //         data: { text }
-  //       }]
-  //     })
-  //   }
-  // }
   render() {
-    console.log(`checking: `, this.state.messageList)
+    const messages = this.state.messageList
+    messages.sort((a, b) => b.time - a.time)
+    const loadMoreBtn = document.getElementById(`load-more`)
+    if (loadMoreBtn) {
+      console.dir(loadMoreBtn.style.opacity)
+      loadMoreBtn.style.opacity = 1
+      if (loadMoreBtn.classList.length && this.state.messageList.length) {
+        loadMoreBtn.classList.remove(`disabled`)
+      }
+    }
     return (
-      <React.Fragment>
-        {/* <Launcher
-          agentProfile={{
-            teamName: `react-live-chat`,
-            imageUrl: `https://a.slack-edge.com/66f9/img/avatars-teams/ava_0001-34.png`
-          }}
-          onMessageWasSent={this._onMessageWasSent.bind(this)}
-          messageList={this.state.messageList}
-          showEmoji
-        /> */}
-      </React.Fragment>
+      <div id="chat-display">
+        <div id="buttons">
+          <div id="contact-icon"><h1>To</h1></div>
+          <button id="load-more" type="button" onClick={() => {
+            this.getMessages(this.state.pages)
+            loadMoreBtn.style.opacity = 0.1
+            loadMoreBtn.classList.add(`disabled`)
+          }}>Load previous</button>
+        </div>
+        <div id="messages">
+          {
+            this.state.messageList.length ?
+              messages.map(msg => {
+                return (
+                  msg.author === `to` ?
+                    <ToMessage key={msg.text} message={msg} />
+                    : <FromMessage key={msg.text} message={msg} />
+                )
+              })
+              : <h2 style={{ textAlign: `center` }}>Loading ...</h2>
+          }
+        </div>
+      </div >
     );
   }
 }
