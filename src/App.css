@@ -33,7 +33,13 @@ div#messages {
   border-top-right-radius: 0px;
   padding: 10px;
 }
+a#timeStamp {
+  text-align: center;
+  color:gray;
+}
 div#bubble {
+    display:inherit;
+    flex-direction: column;
     padding: 5px;
     margin: 5px;
 }
