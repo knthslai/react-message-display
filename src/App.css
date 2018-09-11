@@ -40,11 +40,14 @@ a#timeStamp {
 div#bubble {
     display:inherit;
     flex-direction: column;
-    padding: 5px;
+    padding-top: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-bottom: 5px;
     margin: 5px;
 }
 div#from-container > div#bubble{
-  background: rgb(51, 204, 255);
+  background: rgb(158, 231, 255);
 }
 div#to-container > div#bubble{
   background: rgb(228, 228, 228);
