@@ -12,30 +12,28 @@ class App extends Component {
     };
   }
   componentDidMount() {
-    this.getMessages()
+    this.getMessages(this.state.pages)
   }
   getMessages(pagesNum) {
     [`to`, `from`].forEach(source => {
-      let URL = `https://cors-anywhere.herokuapp.com/https://gv-text-api.herokuapp.com/api/texts/${source}`
-      const newState = {}
-      if (pagesNum) {
-        URL += `?pages=${pagesNum}`
-        newState.pages = pagesNum + 1
-      }
+      let URL = `https://cors-anywhere.herokuapp.com/https://gv-text-api.herokuapp.com/api/texts/${source}?page=${pagesNum}`
+      const newState = { pages: pagesNum + 1 }
 
       try {
         fetch(URL).then(resp => resp.json()).then(messages => {
-          const messageList = messages.texts.map(({ text, time }) => {
-            const formattedDate = new Date(time)
-            return {
-              author: source,
-              text,
-              time,
-              timeText: formattedDate.toLocaleTimeString()
-            }
-          })
-          newState.messageList = this.state.messageList.concat(messageList)
-          this.setState(newState)
+          if (Array.isArray(messages.texts)) {
+            const messageList = messages.texts.map(({ text, time }) => {
+              const formattedDate = new Date(time)
+              return {
+                author: source,
+                text,
+                time,
+                timeText: formattedDate.toLocaleTimeString()
+              }
+            })
+            newState.messageList = this.state.messageList.concat(messageList)
+            this.setState(newState)
+          }
         })
       } catch (error) { console.error(error); }
     })
